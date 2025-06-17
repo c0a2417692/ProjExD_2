@@ -44,9 +44,14 @@ def main():
     bb_rct.centerx = random.randint(0, WIDTH) #横座標の乱数
     bb_rct.centery = random.randint(0, HEIGHT) #縦座標の乱数
     vx, vy = +5, +5 #爆弾の移動速度
-    
+
 
     def gameover(screnn: pg.Surface) -> None:
+        """
+        引数引数:screnn
+        戻り値：None
+        爆弾にぶつかったら、gameoverにする関数
+        """
         bg_img = pg.Surface((1100, 650)) #ブラックアウト
         pg.draw.rect(bg_img,(0, 0, 0),(0 , 0, 1100,0))
         bg_img.set_alpha(150)
