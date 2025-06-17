@@ -2,7 +2,7 @@ import os
 import random
 import sys
 import pygame as pg
-
+import time
 
 WIDTH, HEIGHT = 1100, 650
 DELTA = { #移動量辞書
@@ -42,6 +42,23 @@ def main():
     bb_rct.centerx = random.randint(0, WIDTH) #横座標の乱数
     bb_rct.centery = random.randint(0, HEIGHT) #縦座標の乱数
     vx, vy = +5, +5 #爆弾の移動速度
+
+    def gameover(screnn: pg.Surface) -> None:
+        bg_img = pg.Surface((1100, 650)) #ブラックアウト
+        pg.draw.rect(bg_img,(0, 0, 0),(0 , 0, 1100,0))
+        bg_img.set_alpha(150)
+        img = pg.image.load("fig/9.png") #こうかとん表示
+        fonto = pg.font.Font(None, 80) #画像の表示
+        txt = fonto.render("Game Over",True, (255, 255, 255))
+        screen.blit(bg_img, [0, 0])
+        screen.blit(txt, [355, 300])
+        screen.blit(img, [300, 300])
+        screen.blit(img, [665, 300])
+        pg.display.update()
+        time.sleep(5)
+
+        
+
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -50,9 +67,11 @@ def main():
                 return
         if kk_rct.colliderect(bb_rct):
             print("ゲームオーバー")
-            return
+            gameover(screen)
+            return 
         screen.blit(bg_img, [0, 0]) 
-
+        
+        
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
         for key , mv in DELTA.items():
@@ -78,10 +97,11 @@ def main():
         if not tate:
             vy *= -1
         screen.blit(bb_img, bb_rct) #爆弾の描画
+        
+        
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
 
 if __name__ == "__main__":
     pg.init()
