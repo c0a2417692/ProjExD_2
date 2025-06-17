@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 import pygame as pg
 
@@ -13,6 +14,19 @@ DELTA = { #移動量辞書
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
+    """
+    引数引数：こうかとんRectかばくだんRect
+    戻り値：タプル（横方向判定結果，縦方向判定結果）
+    画面内ならTrue,画面外ならFalse
+    """
+
+    yoko, tate = True, True #初期値:画面内
+    if rct.left < 0 or WIDTH < rct.right:
+        yoko = False
+    if rct.top < 0 or HEIGHT < rct.bottom:
+        tate = False
+    return yoko,tate #横方向,縦方向の画面内判定結果を返す
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -21,6 +35,13 @@ def main():
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
+    bb_img = pg.Surface((20, 20)) #空のSurface作成(爆弾用)
+    pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)
+    bb_img.set_colorkey((0, 0, 0)) #黒を透明に設定
+    bb_rct = bb_img.get_rect() #爆弾のRectを取得
+    bb_rct.centerx = random.randint(0, WIDTH) #横座標の乱数
+    bb_rct.centery = random.randint(0, HEIGHT) #縦座標の乱数
+    vx, vy = +5, +5 #爆弾の移動速度
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -44,7 +65,16 @@ def main():
         # if key_lst[pg.K_RIGHT]:
         #     sum_mv[0] += 5
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1]) #移動をなかったことにする
         screen.blit(kk_img, kk_rct)
+        bb_rct.move_ip(vx, vy) #爆弾の移動
+        yoko, tate = check_bound(bb_rct) #横方向にはみ出ていたら
+        if not yoko:
+            vx *= -1
+        if not tate:
+            vy *= -1
+        screen.blit(bb_img, bb_rct) #爆弾の描画
         pg.display.update()
         tmr += 1
         clock.tick(50)
