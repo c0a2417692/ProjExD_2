@@ -14,6 +14,7 @@ DELTA = { #移動量辞書
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
     引数引数：こうかとんRectかばくだんRect
@@ -27,6 +28,7 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or HEIGHT < rct.bottom:
         tate = False
     return yoko,tate #横方向,縦方向の画面内判定結果を返す
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -42,6 +44,7 @@ def main():
     bb_rct.centerx = random.randint(0, WIDTH) #横座標の乱数
     bb_rct.centery = random.randint(0, HEIGHT) #縦座標の乱数
     vx, vy = +5, +5 #爆弾の移動速度
+    
 
     def gameover(screnn: pg.Surface) -> None:
         bg_img = pg.Surface((1100, 650)) #ブラックアウト
@@ -57,7 +60,6 @@ def main():
         pg.display.update()
         time.sleep(5)
 
-        
 
     clock = pg.time.Clock()
     tmr = 0
